@@ -1,0 +1,445 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bank</title>
+    <script src="web3.min.js"></script>
+    
+  </head>
+  <body>
+   
+    <center><h2>Bank Wallet</h2></center>
+    Amount to deposit:<input id="amount" type="number">
+    <button id="dep" onclick="depo()">Deposit</button><br>
+    <p>Amount to withdraw:<input id="wamount" type="number">
+   <button id="with" onclick="wd()">withdraw</button></p>
+   <h2>Transfer</h2>
+    <p>Account No:<input id="accno" type="text"></p>
+    <p>Amount:<input id="tamount" type="number"></p>
+    <button id="trans" onclick="transf()">Transfer</button>
+   <h2>Approval</h2>
+    <p>Account No:<input id="aaccno" type="text"></p>
+    <p>Amount:<input id="aamount" type="number"></p>
+    <button id="app" onclick="appr()">Approval</button>
+   <h2>Allowance</h2>
+    <p>Owner Account No:<input id="Oaccno" type="text"></p>
+    <p>Spender Account No:<input id="saccno" type="text"></p>
+    <button id="all" onclick="allow()">Allowance</button>
+   <h2>TransferFrom</h2>
+    <p>From Account No:<input id="faccno" type="text"></p>
+    <p>To Account No:<input id="taccno" type="text"></p>
+    <p>Amount:<input id="famount" type="number"></p>
+    <button id="all" onclick="ftransfer()">Transfer</button>
+    <h2>Balance</h2>
+    <p>Account No:<input id="baccno" type="text"></p>
+    <button id="bal" onclick="cbalance()">Balance</button>
+    <h2>TransferOwnerShip</h2>
+    <p>Account No:<input id="osaccno" type="text"></p>
+    <button id="a" onclick="ostrans()">change</button>
+     <pre id="hashresult"></pre>
+    Previous Hash : <pre id="prehashresult"></pre>
+  </body>
+<script>
+   
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        var sybexcon = web3.eth.contract([
+        {
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_spender",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [
+			{
+				"name": "success",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "totalSupply",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [
+			{
+				"name": "success",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"name": "balance",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "transfer",
+		"outputs": [
+			{
+				"name": "success",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "deposit",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"name": "_spender",
+				"type": "address"
+			}
+		],
+		"name": "allowance",
+		"outputs": [
+			{
+				"name": "remaining",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "_spender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "Approval",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	}
+   ]);
+     var sybex = sybexcon.at('0xa0ca77d660abe48ae21e97224b891b8eb01da89b');
+     var amt=document.getElementById('amount');
+     var amt1=document.getElementById('wamount');
+     var amt2=document.getElementById('tamount');
+     var amt3=document.getElementById('aamount');
+     var amt4=document.getElementById('famount');
+     var acc=document.getElementById('accno');
+     var aacc=document.getElementById('aaccno');
+     var oacc=document.getElementById('Oaccno');
+     var sacc=document.getElementById('saccno');
+     var facc=document.getElementById('faccno');
+     var tacc=document.getElementById('taccno');
+     var bacc=document.getElementById('baccno');
+     var osacc=document.getElementById('osaccno')
+     var output = document.getElementById('hashresult');
+     var preoutput = document.getElementById('prehashresult');
+      if(!web3.isConnected()) {
+  
+        console.log("Ok");
+        
+      } else {
+        console.log("no");
+      }
+      web3.version.getNetwork((err, netId) => {
+            switch (netId) {
+              case "1":
+                console.log('This is mainnet')
+                break
+              case "2":
+                console.log('This is the deprecated Morden test network.')
+                break
+              case "3":
+                console.log('This is the ropsten test network.')
+                break
+              case "4":
+                console.log('This is the Rinkeby test network.')
+                break
+              case "42":
+                console.log('This is the Kovan test network.')
+                break
+              default:
+                console.log('This is an unknown network.')
+            }
+        })
+     function depo(){
+        
+        return sybex.deposit(Number(amt.value),function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+      function wd(){
+        
+        return sybex.withdraw(Number(amt1.value),function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+     function transf(){
+        
+        return sybex.transfer(acc.value,Number(amt2.value),function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+      function appr(){
+        
+        return sybex.approve(aacc.value,Number(amt3.value),function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+      function allow(){
+        
+        return sybex.allowance(oacc.value,sacc.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+     function ftransfer(){
+        
+        return sybex.transferFrom(facc.value,tacc.value,Number(amt4.value),function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+      function cbalance(){
+        
+        return sybex.balanceOf(bacc.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+       function ostrans(){
+        
+        return sybex.transferOwnership(osacc.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+</script>
+</html>
+
+        
+
+
