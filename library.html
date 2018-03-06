@@ -1,0 +1,251 @@
+<html>
+<head>
+    <title>Test</title>
+    <script src="web3.min.js"></script>
+</head>
+<body>
+<center><h2>LIBRARY</h2></center>
+<p><b>User Entry</b></p>
+<p>UserId:<input id="uid" type="number"></p>
+<p>User Name:<input id="uname" type="text"></p>
+<p><button id="reg" onclick="ureg()">Register</button></p>
+<p><b>Book Entry</b></p>
+<p>BookId:<input id="bid" type="number"></p>
+<p>Book Name:<input id="bname" type="text"></p>
+<p>Stock:<input id="ustock" type="number"></p>
+<p><button id="reg" onclick="breg()">BOOK ENTRY</button></p>
+<p><b>Book Selection</b></p>
+<p>BookId:<input id="bid1" type="number"></p>
+<p>UesrId:<input id="uid1" type="text"></p>
+<p><button id="bc" onclick="bc()">selectbook</button></p>
+<p><b>Book Returning</b></p>
+<p>BookId:<input id="bid2" type="number"></p>
+<p>UesrId:<input id="uid2" type="text"></p>
+<p><button id="br" onclick="br()">returnbook</button></p>
+<p><b>User Details</b></p>
+<p>UesrId:<input id="uid3" type="text"></p>
+<p><button id="ud" onclick="ud()">User Check</button></p>
+<p><b>Book Details</b></p>
+<p>BookId:<input id="bid3" type="text"></p>
+<p><button id="bd" onclick="bd()">Details</button></p>
+<pre id="hashresult"></pre>
+</body>
+<script>
+ web3.eth.defaultAccount = web3.eth.accounts[0];
+        var libr = web3.eth.contract([
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "userchecking",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "bookschecking",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "bid",
+				"type": "uint256"
+			},
+			{
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "bookchoose",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "bid",
+				"type": "uint256"
+			},
+			{
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "bookreturn",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "bid",
+				"type": "uint256"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "stock",
+				"type": "uint256"
+			}
+		],
+		"name": "rbook",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "a",
+				"type": "uint256"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			}
+		],
+		"name": "ruser",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	} 
+    ]);
+     var list = libr.at('0x3d7561c00c69ad79cc36b9230bbd652e715cd8a8');
+     var ui   = document.getElementById('uid');
+     var unam = document.getElementById('uname');
+     var bi   = document.getElementById('bid');
+     var bnam = document.getElementById('bname');
+     var bsto = document.getElementById('ustock');
+     var ui1  = document.getElementById('uid1');
+     var bi1  = document.getElementById('bid1');
+     var ui2  = document.getElementById('uid2');
+     var bi2  = document.getElementById('bid2');
+     var ui3  = document.getElementById('uid3');
+     var bi3  = document.getElementById('bid3');
+     var result=document.getElementById('hashresult');
+     function ureg(){
+        
+        return list.ruser(Number(ui.value),unam.value,function(err,res){
+                if (!err) {
+                    result.innerText = res;
+                }
+                else{
+                  result.innerText = "Error";
+                }
+              });
+      }
+     function breg(){
+        
+        return list.rbook(Number(bi.value),bnam.value,Number(bsto.value),function(err,res){
+                if (!err) {
+                    result.innerText = res;
+                }
+                else{
+                  result.innerText = "Error";
+                }
+              });
+      }
+     function bc(){
+        
+        return list.bookchoose(Number(ui1.value),Number(bi1.value),function(err,res){
+                if (!err) {
+                    result.innerText = res;
+                }
+                else{
+                  result.innerText = "Error";
+                }
+              });
+      }
+     function br(){
+        
+        return list.bookreturn(Number(ui2.value),Number(bi2.value),function(err,res){
+                if (!err) {
+                    result.innerText = res;
+                }
+                else{
+                  result.innerText = "Error";
+                }
+              });
+      }
+     function ud(){
+        
+        return list.userchecking(Number(ui3.value),function(err,res){
+                if (!err) {
+                    result.innerText = res;
+                }
+                else{
+                  result.innerText = "Error";
+                }
+              });
+      }
+      function bd(){
+        
+        return list.bookschecking(Number(bi3.value),function(err,res){
+                if (!err) {
+                    result.innerText = res;
+                }
+                else{
+                  result.innerText = "Error";
+                }
+              });
+      }
+</script>
+</html>
